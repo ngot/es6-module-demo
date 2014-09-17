@@ -10,26 +10,10 @@
 				load();
 			});
 		} else {
-			traceur.options.experimental = true;
-			var runner = new traceur.WebPageTranscoder(document.location.href);
-			runner.run = function() {
-				var done = arguments[0] !== (void 0) ? arguments[0] : (function() {
-				});
-				var $__838 = this;
-				var ready = document.readyState;
-				if ('cordova' in window) {
-					document.addEventListener("deviceready", (function() {
-						return $__838.selectAndProcessScripts(done);
-					}), false);
-				} else if (ready === 'complete' || ready === 'loaded' || ready === 'interactive') {
-					this.selectAndProcessScripts(done);
-				} else {
-					document.addEventListener('DOMContentLoaded', (function() {
-						return $__838.selectAndProcessScripts(done);
-					}), false);
-				}
-			};
-			runner.run();
+			document.onreadystatechange = function () {
+				if (document.readyState == "complete")
+					bootstrap();
+			}
 		}
 	}
 
@@ -49,6 +33,11 @@
 		c.src = src;
 		head.appendChild(c);
 		if (is_module) fn();
+	}
+
+	function bootstrap() {
+		traceur.options.experimental = true;
+		new traceur.WebPageTranscoder(document.location.href).run();
 	}
 
 	if (document.body)
